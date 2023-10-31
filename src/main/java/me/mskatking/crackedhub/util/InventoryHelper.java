@@ -23,7 +23,7 @@ public class InventoryHelper {
         return result;
     }
 
-    public static Inventory fillMiddleWithObjects(List<GUIObject> objects, Inventory inv) {
+    public static void fillMiddleWithObjects(List<GUIObject> objects, Inventory inv) {
         int size = inv.getSize();
         int index = 0;
         for(int i = 9; i <= size - 9; i++) {
@@ -31,13 +31,12 @@ public class InventoryHelper {
                 i++;
                 continue;
             }
-            if(index <= objects.size()) {
-                inv.setItem(i, objects.get(i).getRepresentingItem());
+            if(index < objects.size()) {
+                inv.setItem(i, objects.get(index).getRepresentingItem());
             } else {
                 inv.setItem(i, new ItemStack(Material.AIR));
             }
             index++;
         }
-        return inv;
     }
 }

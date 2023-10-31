@@ -43,15 +43,14 @@ public class CrackedHubRanks implements Module {
         for(String s : config.getKeys(false)) {
             ranks.add(config.getSerializable(s, Rank.class));
         }
-
-        p.getServer().getCommandMap().register("ranks", new Ranks());
-        p.getServer().getCommandMap().register("getrank", new SetRank());
     }
 
     public void disable() {
         Console.info("Disabling rank module...");
         shutdown();
         enabled = false;
+        p.getServer().getCommandMap().getCommand("ranks").unregister(p.getServer().getCommandMap());
+        p.getServer().getCommandMap().getCommand("setrank").unregister(p.getServer().getCommandMap());
         Console.info("Rank module disabled!");
     }
 
@@ -80,6 +79,8 @@ public class CrackedHubRanks implements Module {
     public void enable() {
         Console.info("Enabling rank module...");
         enabled = true;
+        p.getServer().getCommandMap().register("ranks", new Ranks());
+        p.getServer().getCommandMap().register("setrank", new SetRank());
         Console.info("Rank module enabled!");
     }
 }

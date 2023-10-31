@@ -45,11 +45,6 @@ public class CrackedHubBox implements Module {
         boxOverworld = CrackedHub.core.getMVWorldManager().getMVWorld("box_overworld");
         boxNether = CrackedHub.core.getMVWorldManager().getMVWorld("box_nether");
         boxEnd = CrackedHub.core.getMVWorldManager().getMVWorld("box_end");
-        HashMap<Material, Double> a = new HashMap<>();
-        a.put(Material.STONE, 50.0);
-        a.put(Material.DIRT, 50.0);
-        boxes.add(new Box("test", boxOverworld, a, 10, 0.0, new Location(boxOverworld.getCBWorld(), 10, 0, 10), new Location(boxOverworld.getCBWorld(), -10, 0, -10)));
-        boxes.get(0).update();
     }
 
     @Override
