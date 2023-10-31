@@ -1,0 +1,10 @@
+name: CrackedHub
+version: '${project.version}'
+main: me.mskatking.crackedhub.CrackedHub
+api-version: '1.20'
+load: POSTWORLD
+dependencies:
+  server:
+    Multiverse-Core:
+      load: BEFORE
+      required: true
