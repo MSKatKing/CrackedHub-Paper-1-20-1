@@ -2,13 +2,13 @@ package me.mskatking.crackedhub.modules.ranks.commands;
 
 import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.util.Console;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,36 +25,36 @@ public class SetRank extends Command {
     @Override
     public boolean execute(@NotNull CommandSender commandSender, @NotNull String s, @NotNull String[] strings) {
         if(strings.length != 2) {
-            commandSender.sendMessage(ChatColor.RED + "I don't know what the arguments '" + String.join(", ", strings) + "' mean!");
+            commandSender.sendMessage(Component.text("I don't know what the arguments '" + String.join(", ", strings) + "' mean!", NamedTextColor.RED));
             return true;
         }
         if(!commandSender.hasPermission("crackedhub.admin.setrank") && !commandSender.isOp()) {
-            commandSender.sendMessage(ChatColor.RED + "You don't have permission to execute this command!");
+            commandSender.sendMessage(Component.text("You don't have permission to execute this command!", NamedTextColor.RED));
             return true;
         }
         OfflinePlayer p = Bukkit.getOfflinePlayer(strings[0]);
 
         if(ranks.contains(strings[1])) {
             if(!CrackedHub.developers.contains(p.getUniqueId().toString())) CrackedHub.developers.add(p.getUniqueId().toString());
-            CrackedHub.config.set(strings[1], CrackedHub.developers);
+            CrackedHub.ranksModule.config.set(strings[1], CrackedHub.developers);
             try {
-                CrackedHub.config.save(CrackedHub.f);
+                CrackedHub.ranksModule.save();
             } catch (Exception e) {
                 Console.error("Unable to save ranks!");
-                commandSender.sendMessage(ChatColor.RED + "Unable to give " + p.getName() + " the rank " + strings[1]);
+                commandSender.sendMessage(Component.text("Unable to give " + p.getName() + " the rank " + strings[1], NamedTextColor.RED));
                 return true;
             }
-            commandSender.sendMessage(ChatColor.GREEN + "Successfully gave " + p.getName() + " the rank " + strings[1]);
+            commandSender.sendMessage(Component.text("Successfully gave " + p.getName() + " the rank " + strings[1], NamedTextColor.GREEN));
             return true;
         } else {
-            commandSender.sendMessage(ChatColor.RED + "The rank " + strings[1] + " does not exist!");
+            commandSender.sendMessage(Component.text("The rank " + strings[1] + " does not exist!", NamedTextColor.RED));
         }
 
         return true;
     }
 
     @Override
-    public @Nullable List<String> tabComplete(@NotNull CommandSender commandSender, @NotNull String s, @NotNull String[] args) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender commandSender, @NotNull String s, @NotNull String[] args) {
             ArrayList<String> players = new ArrayList<>();
             Bukkit.getServer().getOnlinePlayers().forEach((i) -> players.add(i.getName()));
 
@@ -73,6 +73,6 @@ public class SetRank extends Command {
                 }
                 return result;
             }
-        return null;
+        return List.of("");
     }
 }

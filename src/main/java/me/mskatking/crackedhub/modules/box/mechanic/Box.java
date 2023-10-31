@@ -10,6 +10,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Box {
 
@@ -32,7 +33,7 @@ public class Box {
         this.resetTime = resetTime;
         this.resetPercent = resetPercent;
 
-        CrackedHubBox.boxes.add(this);
+        CrackedHub.boxModule.boxes.add(this);
     }
 
     public Box(UUID id, String name, MultiverseWorld world, HashMap<Material, Double> blocks, int resetTime, double resetPercent, Location loc1, Location loc2) {
@@ -45,7 +46,15 @@ public class Box {
         this.resetTime = resetTime;
         this.resetPercent = resetPercent;
 
-        CrackedHubBox.boxes.add(this);
+        CrackedHub.boxModule.boxes.add(this);
+    }
+
+    public void setResetTime(int newTime) {
+        this.resetTime = newTime;
+    }
+
+    public void setResetPercent(double newPercent) {
+        this.resetPercent = newPercent;
     }
 
     public void update() {
@@ -76,6 +85,12 @@ public class Box {
             for(int y = Math.min(loc1.getBlockY(), loc2.getBlockY()); y <= Math.max(loc1.getBlockY(), loc2.getBlockY()); y++) {
                 for(int z = Math.min(loc1.getBlockZ(), loc2.getBlockZ()); z <= Math.max(loc1.getBlockZ(), loc2.getBlockZ()); z++) {
                     Location workingLoc = new Location(world.getCBWorld(), x, y, z);
+                    Random rand = new Random();
+                    for(Material d : blocks.keySet()) {
+                        if(blocks.get(d) >= rand.nextDouble(0.00, 100.00)) {
+                            workingLoc.getBlock().setType(d);
+                        }
+                    }
                 }
             }
         }

@@ -4,6 +4,8 @@ import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.modules.box.mechanic.Box;
 import me.mskatking.crackedhub.util.Console;
+import me.mskatking.crackedhub.util.Errors;
+import me.mskatking.crackedhub.util.Module;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -11,25 +13,28 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CrackedHubBox {
+public class CrackedHubBox implements Module {
 
-    public boolean enabled = true;
+    private boolean enabled;
     public final MultiverseWorld boxOverworld, boxNether, boxEnd;
-    public final FileConfiguration config = new YamlConfiguration();
-    public final File f;
-    public static final ArrayList<Box> boxes = new ArrayList<>();
+    private final FileConfiguration config = new YamlConfiguration();
+    private final File f;
+    public final ArrayList<Box> boxes = new ArrayList<>();
 
     public CrackedHubBox() {
-        File path = new File(String.valueOf(CrackedHub.getPlugin(CrackedHub.class).getDataFolder()));
+        File path = new File(String.valueOf(CrackedHub.getPlugin().getDataFolder()));
         if(!path.exists()) {
-            path.mkdirs();
+            boolean ignored = path.mkdirs();
         }
         this.f = new File(path, "boxes.yml");
         try {
-            if(!f.exists()) f.createNewFile();
+            if(!f.exists()) {
+                boolean ignored = f.createNewFile();
+            }
             config.load(f);
         } catch (InvalidConfigurationException e) {
             Console.error("Box YAML is not valid!");
@@ -45,5 +50,37 @@ public class CrackedHubBox {
         a.put(Material.DIRT, 50.0);
         boxes.add(new Box("test", boxOverworld, a, 10, 0.0, new Location(boxOverworld.getCBWorld(), 10, 0, 10), new Location(boxOverworld.getCBWorld(), -10, 0, -10)));
         boxes.get(0).update();
+    }
+
+    @Override
+    public void enable() {
+        enabled = true;
+    }
+
+    @Override
+    public void disable() {
+        enabled = false;
+    }
+
+    @Override
+    public void shutdown() {
+        Console.info("Shutting down boxes module...");
+        try {
+            config.save(f);
+        } catch (IOException e) {
+            Console.warn(Errors.BOXES_SAVE_WARN.toString());
+        }
+        Console.info("Boxes module shut down!");
+    }
+
+    @Override
+    public boolean save() {
+        try {
+            config.save(f);
+        } catch (Exception e) {
+            Console.error(Errors.BOXES_SAVE_ERROR.toString());
+            return false;
+        }
+        return true;
     }
 }
