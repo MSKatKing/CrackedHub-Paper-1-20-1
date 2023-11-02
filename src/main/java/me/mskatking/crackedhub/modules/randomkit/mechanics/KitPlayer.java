@@ -47,21 +47,22 @@ public class KitPlayer implements ConfigurationSerializable, GUIObject {
     }
 
     public void giveKit(Kit k, boolean bypassTime) {
-        if(p.getInventory().getContents().length >= p.getInventory().getSize() + k.items.size()) {
-            p.sendMessage(Component.text("[Kits] Your inventory is full! You need space for " + k.items.size() + " items!", NamedTextColor.RED));
-            return;
-        }
         if(bypassTime || canChooseKit()) {
+            if(p.getInventory().getContents().length >= p.getInventory().getSize() + k.items.size()) {
+                p.sendMessage(Component.text("[Kits] Your inventory is full! You need space for " + k.items.size() + " items!", NamedTextColor.RED));
+                return;
+            }
             for(ItemStack i : k.items) {
                 p.getInventory().addItem(i);
             }
+            if(canChooseKit()) chosenCooldown = 600;
         } else {
             p.sendMessage(Component.text("[Kits] You have to wait " + chosenCooldown / 60 + "m " + chosenCooldown % 60 + "s before you can choose a kit!", NamedTextColor.RED));
         }
     }
 
     public void giveRandomKit(boolean bypassTime) {
-        Kit random = CrackedHub.randomKitModule.kits.get(new Random().nextInt(0, CrackedHub.randomKitModule.kits.size() - 1));
+        Kit random = (CrackedHub.randomKitModule.kits.size() - 1) == 0 ? CrackedHub.randomKitModule.kits.get(0) : CrackedHub.randomKitModule.kits.get(new Random().nextInt(0, CrackedHub.randomKitModule.kits.size() - 1));
         if(bypassTime || canGetRandomKit()) {
             if(p.getInventory().getContents().length >= p.getInventory().getSize() + random.items.size()) {
                 p.sendMessage(Component.text("[Kits] Your inventory is full! You need space for " + random.items.size() + " items!", NamedTextColor.RED));
@@ -70,6 +71,7 @@ public class KitPlayer implements ConfigurationSerializable, GUIObject {
             for(ItemStack i : random.items) {
                 p.getInventory().addItem(i);
             }
+            if(canGetRandomKit()) randomCooldown = 600;
         } else {
             p.sendMessage(Component.text("[Kits] You have to wait " + randomCooldown / 60 + "m " + randomCooldown % 60 + "s before you can receive a kit!", NamedTextColor.RED));
         }

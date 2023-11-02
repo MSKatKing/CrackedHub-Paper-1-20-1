@@ -24,10 +24,10 @@ public class RandomKit extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(sender instanceof Player p) {
-            if (args.length == 1 && args[0].equals("menu")) p.openInventory(KitGUI.getInventory());
+            if (args.length == 1 && args[0].equals("menu") && p.isOp()) p.openInventory(KitGUI.getInventory());
             else {
                 try {
-                    CrackedHub.randomKitModule.getPlayer(p).giveRandomKit(false);
+                    CrackedHub.randomKitModule.getPlayer(p).giveRandomKit(p.hasPermission("crackedhub.admin.inf-rk"));
                 } catch (PlayerNotFoundException e) {
                     sender.sendMessage(CrackedHub.randomKitModule.getPrefix().append(Component.text("PlayerNotFoundException@" + e.getCause() + " | " + e.getMessage(), NamedTextColor.RED)));
                 }

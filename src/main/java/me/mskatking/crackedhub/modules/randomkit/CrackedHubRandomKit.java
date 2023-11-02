@@ -2,6 +2,7 @@ package me.mskatking.crackedhub.modules.randomkit;
 
 import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.modules.randomkit.commands.RandomKit;
+import me.mskatking.crackedhub.modules.randomkit.events.MainListener;
 import me.mskatking.crackedhub.modules.randomkit.mechanics.Kit;
 import me.mskatking.crackedhub.modules.randomkit.mechanics.KitPlayer;
 import me.mskatking.crackedhub.modules.randomkit.util.KitNotFoundException;
@@ -30,6 +31,7 @@ public class CrackedHubRandomKit implements Module {
     private final FileConfiguration config = new YamlConfiguration();
     private final File f;
     private boolean enabled = false;
+    private Timer update = new Timer();
 
     public CrackedHubRandomKit() {
         File path = new File(String.valueOf(CrackedHub.getPlugin().getDataFolder()));
@@ -53,15 +55,15 @@ public class CrackedHubRandomKit implements Module {
     public void enable() {
         Console.info("Enabling random kit module...");
         CrackedHub.getPlugin().getServer().getCommandMap().register("randomkit", new RandomKit());
+        CrackedHub.getPlugin().getServer().getPluginManager().registerEvents(new MainListener(), CrackedHub.getPlugin());
         enabled = true;
         initializeFromConfig();
-        Timer update = new Timer();
-        update.schedule(new TimerTask() {
+        update.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 if(enabled) players.forEach(KitPlayer::tick);
             }
-        }, 1000);
+        }, 0, 1000);
         Console.info("Random kit module enabled!");
     }
 
@@ -80,6 +82,7 @@ public class CrackedHubRandomKit implements Module {
             config.set(k.getID(), k.serialize());
         }
         save();
+        update.cancel();
         Console.info("Random kit module shut down!");
     }
 
