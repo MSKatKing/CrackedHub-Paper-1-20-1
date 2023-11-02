@@ -14,16 +14,16 @@ import java.util.*;
 
 public class Kit implements ConfigurationSerializable, GUIObject {
 
-    private final UUID id;
+    private final String id;
     public final ArrayList<ItemStack> items = new ArrayList<>();
 
     public Kit(ItemStack... items) {
-        this.id = UUID.randomUUID();
+        this.id = UUID.randomUUID().toString();
         this.items.addAll(List.of(items));
     }
 
     public Kit(String id, List<Map<?, ?>> in) {
-        this.id = UUID.fromString(id);
+        this.id = id;
         for(Map<?, ?> i : in) {
             items.add(ItemStack.deserialize((Map<String, Object>) i));
         }
