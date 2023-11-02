@@ -6,6 +6,7 @@ import me.mskatking.crackedhub.modules.box.mechanic.Box;
 import me.mskatking.crackedhub.util.Console;
 import me.mskatking.crackedhub.util.Errors;
 import me.mskatking.crackedhub.util.Module;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -77,5 +78,15 @@ public class CrackedHubBox implements Module {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean initializeFromConfig() {
+        return true;
+    }
+
+    @Override
+    public Component getPrefix() {
+        return null;
     }
 }

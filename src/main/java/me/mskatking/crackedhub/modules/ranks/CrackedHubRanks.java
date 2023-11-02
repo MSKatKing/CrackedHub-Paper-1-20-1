@@ -6,9 +6,12 @@ import me.mskatking.crackedhub.modules.ranks.commands.SetRank;
 import me.mskatking.crackedhub.util.Console;
 import me.mskatking.crackedhub.util.Errors;
 import me.mskatking.crackedhub.util.Module;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -21,7 +24,7 @@ public class CrackedHubRanks implements Module {
     private boolean enabled;
     public ArrayList<Rank> ranks = new ArrayList<>();
 
-    private final HashMap<String, Rank> players = new HashMap<>();
+    public final HashMap<String, Rank> players = new HashMap<>();
 
     public final FileConfiguration config = new YamlConfiguration();
     private final File f;
@@ -43,6 +46,11 @@ public class CrackedHubRanks implements Module {
         for(String s : config.getKeys(false)) {
             ranks.add(config.getSerializable(s, Rank.class));
         }
+    }
+
+    public NamedTextColor getPlayerColor(Player p) {
+        if (!enabled) return NamedTextColor.GRAY;
+        return players.get(p.getUniqueId().toString()).color;
     }
 
     public void disable() {
@@ -74,6 +82,16 @@ public class CrackedHubRanks implements Module {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean initializeFromConfig() {
+        return true;
+    }
+
+    @Override
+    public Component getPrefix() {
+        return null;
     }
 
     public void enable() {

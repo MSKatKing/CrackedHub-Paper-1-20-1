@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.mskatking</groupId>
-    <artifactId>CrackedBoxx</artifactId>
-    <version>1.0.1a</version>
+    <artifactId>CrackedHub</artifactId>
+    <version>1.0.3a</version>
     <packaging>jar</packaging>
 
-    <name>CrackedBoxx</name>
+    <name>CrackedHub</name>
 
     <properties>
         <java.version>1.8</java.version>
