@@ -4,8 +4,8 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import me.mskatking.crackedhub.modules.box.CrackedHubBox;
 import me.mskatking.crackedhub.modules.randomkit.CrackedHubRandomKit;
 import me.mskatking.crackedhub.modules.ranks.CrackedHubRanks;
+import me.mskatking.crackedhub.util.ConfigHelper;
 import me.mskatking.crackedhub.util.Console;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,21 +35,8 @@ public final class CrackedHub extends JavaPlugin {
         ranksModule = new CrackedHubRanks();
         randomKitModule = new CrackedHubRandomKit();
 
-        File path = new File(String.valueOf(CrackedHub.getPlugin().getDataFolder()));
-        if(!path.exists()) {
-            boolean ignored = path.mkdirs();
-        }
-        f = new File(path, "config.yml");
-        try {
-            if(!f.exists()) {
-                boolean ignored = f.createNewFile();
-            }
-            config.load(f);
-        } catch (InvalidConfigurationException e) {
-            Console.error("Box YAML is not valid!");
-        } catch (Exception e) {
-            Console.error(e.getMessage());
-        }
+        f = ConfigHelper.getFile("config.yml");
+        config = ConfigHelper.getConfig("config.yml");
 
         if (!config.contains("modules.box")) config.set("modules.box", true);
         if (!config.contains("modules.ranks")) config.set("modules.ranks", true);
@@ -59,6 +46,8 @@ public final class CrackedHub extends JavaPlugin {
         if(config.getBoolean("modules.box")) boxModule.enable();
         if(config.getBoolean("modules.ranks")) ranksModule.enable();
         if(config.getBoolean("modules.randomkit")) randomKitModule.enable();
+
+        getServer().getCommandMap().register("crackedhub", new me.mskatking.crackedhub.commands.CrackedHub());
 
         Console.info("CrackedHub enabled!");
     }

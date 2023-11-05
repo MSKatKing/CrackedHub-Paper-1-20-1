@@ -23,28 +23,8 @@ public class RandomKit extends Command {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
-        if(sender instanceof Player p) {
-            if (args.length == 1 && args[0].equals("menu") && p.isOp()) p.openInventory(KitGUI.getInventory());
-            else {
-                try {
-                    CrackedHub.randomKitModule.getPlayer(p).giveRandomKit(p.hasPermission("crackedhub.admin.inf-rk"));
-                } catch (PlayerNotFoundException e) {
-                    sender.sendMessage(CrackedHub.randomKitModule.getPrefix().append(Component.text("PlayerNotFoundException@" + e.getCause() + " | " + e.getMessage(), NamedTextColor.RED)));
-                }
-            }
-        } else { //TODO: add functionality to create, edit, delete kits thru this command
-            if(args.length != 2) {
-                sender.sendMessage(CrackedHub.randomKitModule.getPrefix().append(Component.text("Error! I don't know what the arguments '" + String.join(", ", args) + "' mean!", NamedTextColor.RED)));
-            } else {
-                try {
-                    CrackedHub.randomKitModule.getPlayer(Bukkit.getPlayer(args[0])).giveKit(CrackedHub.randomKitModule.getKit(args[1]), true);
-                    sender.sendMessage(CrackedHub.randomKitModule.getPrefix().append(Component.text("Successfully gave " + args[0] + " the kit " + args[1] + "!", NamedTextColor.GREEN)));
-                } catch (PlayerNotFoundException e) {
-                    sender.sendMessage(CrackedHub.randomKitModule.getPrefix().append(Component.text("PlayerNotFoundException@" + e.getCause() + " | " + e.getMessage(), NamedTextColor.RED)));
-                } catch (KitNotFoundException e) {
-                    sender.sendMessage(CrackedHub.randomKitModule.getPrefix().append(Component.text("KitNotFoundException@" + e.getCause() + " | " + e.getMessage(), NamedTextColor.RED)));
-                }
-            }
+        if(sender instanceof Player p && sender.hasPermission("crackedhub.admin.kits")) {
+            p.openInventory(KitGUI.getInventory());
         }
         return true;
     }

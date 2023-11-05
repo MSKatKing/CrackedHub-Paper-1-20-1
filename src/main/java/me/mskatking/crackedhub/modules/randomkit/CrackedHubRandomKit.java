@@ -1,54 +1,55 @@
 package me.mskatking.crackedhub.modules.randomkit;
 
+import com.destroystokyo.paper.Namespaced;
 import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.modules.randomkit.commands.RandomKit;
 import me.mskatking.crackedhub.modules.randomkit.events.MainListener;
 import me.mskatking.crackedhub.modules.randomkit.mechanics.Kit;
-import me.mskatking.crackedhub.modules.randomkit.mechanics.KitPlayer;
 import me.mskatking.crackedhub.modules.randomkit.util.KitNotFoundException;
-import me.mskatking.crackedhub.util.Console;
-import me.mskatking.crackedhub.util.Errors;
+import me.mskatking.crackedhub.util.*;
 import me.mskatking.crackedhub.util.Module;
-import me.mskatking.crackedhub.util.PlayerNotFoundException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.configuration.InvalidConfigurationException;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class CrackedHubRandomKit implements Module {
 
-    public ArrayList<KitPlayer> players = new ArrayList<>();
+    public ArrayList<Player> players = new ArrayList<>();
     public ArrayList<Kit> kits = new ArrayList<>();
 
-    private final FileConfiguration config = new YamlConfiguration();
+    private final FileConfiguration config;
     private final File f;
     private boolean enabled = false;
     private Timer update = new Timer();
 
     public CrackedHubRandomKit() {
-        File path = new File(String.valueOf(CrackedHub.getPlugin().getDataFolder()));
-        if(!path.exists()) {
-            boolean ignored = path.mkdirs();
-        }
-        this.f = new File(path, "randomkits.yml");
-        try {
-            if(!f.exists()) {
-                boolean ignored = f.createNewFile();
-            }
-            config.load(f);
-        } catch (InvalidConfigurationException e) {
-            Console.error("Kit config is not valid!");
-        } catch (Exception e) {
-            Console.error(e.getMessage());
-        }
+        this.f = ConfigHelper.getFile("randomkits.yml");
+        this.config = ConfigHelper.getConfig("randomkits.yml");
+
+        ItemStack s = new ItemStack(Material.GRAY_STAINED_GLASS);
+        s.setAmount(13);
+        ItemMeta m = s.getItemMeta();
+        m.displayName(Component.text("test", NamedTextColor.RED).decorate(TextDecoration.BOLD));
+        m.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        m.addEnchant(Enchantment.BINDING_CURSE, 1, false);
+        m.addEnchant(Enchantment.DIG_SPEED, 15, true);
+        m.lore(List.of(Component.text("hehe", NamedTextColor.DARK_AQUA).decorate(TextDecoration.UNDERLINED)));
+        m.setUnbreakable(true);
+        m.setDestroyableKeys(List.of(Material.GRASS_BLOCK.getKey(), Material.DIAMOND_AXE.getKey()));
+        m.setPlaceableKeys(List.of(Material.GRASS_BLOCK.getKey(), Material.AIR.getKey()));
+        s.setItemMeta(m);
+        this.config.set("test", new Kit(s).serialize());
     }
 
     @Override
@@ -61,10 +62,18 @@ public class CrackedHubRandomKit implements Module {
         update.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if(enabled) players.forEach(KitPlayer::tick);
+                //nothing ticking for now
             }
         }, 0, 1000);
         Console.info("Random kit module enabled!");
+    }
+
+    public boolean isFirstJoin(Player p) {
+        if(!config.isSet("players." + p.getUniqueId())) {
+            config.set("players." + p.getUniqueId(), true);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -108,12 +117,6 @@ public class CrackedHubRandomKit implements Module {
     @Override
     public Component getPrefix() {
         return Component.text("[", NamedTextColor.DARK_AQUA).append(Component.text("Kits", NamedTextColor.AQUA)).append(Component.text("] ", NamedTextColor.DARK_AQUA));
-    }
-
-    public KitPlayer getPlayer(Player p) throws PlayerNotFoundException {
-        List<KitPlayer> out = players.stream().filter((i) -> i.p.getUniqueId().equals(p.getUniqueId())).toList();
-        if(out.isEmpty()) throw new PlayerNotFoundException(p);
-        return out.get(0);
     }
 
     public Kit getKit(String name) throws KitNotFoundException {

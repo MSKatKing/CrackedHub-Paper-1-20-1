@@ -11,8 +11,8 @@ import java.util.List;
 
 public class InventoryHelper {
 
-    public static Inventory emptyInventory(int rows) {
-        Inventory result = Bukkit.createInventory(null, rows * 9);
+    public static Inventory emptyInventory(int rows, Component name) {
+        Inventory result = Bukkit.createInventory(null, rows * 9, name);
         ItemStack empty = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta emptyMeta = empty.getItemMeta();
         emptyMeta.displayName(Component.text(""));
@@ -28,7 +28,6 @@ public class InventoryHelper {
         int index = 0;
         for(int i = 9; i <= size - 9; i++) {
             if(i + 1 % 9 == 0 || i + 1 % 9 == 8) {
-                i++;
                 continue;
             }
             if(index < objects.size()) {

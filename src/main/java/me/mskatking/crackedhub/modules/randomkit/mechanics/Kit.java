@@ -48,7 +48,7 @@ public class Kit implements ConfigurationSerializable, GUIObject {
     public ItemStack getRepresentingItem() {
         ItemStack out = new ItemStack(Material.NAME_TAG);
         ItemMeta meta = out.getItemMeta();
-        meta.displayName(Component.text(id.toString() + TextDecoration.BOLD));
+        meta.displayName(Component.text(id.toString(), NamedTextColor.AQUA).decorate(TextDecoration.BOLD));
         List<Component> lore = new ArrayList<>();
         items.forEach((i) -> lore.add(i.displayName().color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)));
         meta.lore(lore);
