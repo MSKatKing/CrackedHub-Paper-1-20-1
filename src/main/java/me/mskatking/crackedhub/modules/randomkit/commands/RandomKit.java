@@ -24,7 +24,7 @@ public class RandomKit extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(sender instanceof Player p && sender.hasPermission("crackedhub.admin.kits")) {
-            p.openInventory(KitGUI.getInventory());
+            p.openInventory(KitGUI.getInventory(p));
         }
         return true;
     }

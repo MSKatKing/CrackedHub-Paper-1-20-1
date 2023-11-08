@@ -1,6 +1,9 @@
 package me.mskatking.crackedhub;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import me.mskatking.crackedhub.commands.RebootMessage;
 import me.mskatking.crackedhub.modules.box.CrackedHubBox;
 import me.mskatking.crackedhub.modules.randomkit.CrackedHubRandomKit;
 import me.mskatking.crackedhub.modules.ranks.CrackedHubRanks;
@@ -11,6 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.sql.*;
 import java.util.ArrayList;
 
 public final class CrackedHub extends JavaPlugin {
@@ -26,6 +30,7 @@ public final class CrackedHub extends JavaPlugin {
 
     public static FileConfiguration config = new YamlConfiguration();
     public static File f;
+    public static Connection connection = null;
 
     @Override
     public void onEnable() {
@@ -48,6 +53,7 @@ public final class CrackedHub extends JavaPlugin {
         if(config.getBoolean("modules.randomkit")) randomKitModule.enable();
 
         getServer().getCommandMap().register("crackedhub", new me.mskatking.crackedhub.commands.CrackedHub());
+        getServer().getCommandMap().register("crackedhub", new RebootMessage());
 
         Console.info("CrackedHub enabled!");
     }

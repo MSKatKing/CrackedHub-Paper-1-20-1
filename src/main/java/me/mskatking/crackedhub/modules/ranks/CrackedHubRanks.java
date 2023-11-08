@@ -3,6 +3,7 @@ package me.mskatking.crackedhub.modules.ranks;
 import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.modules.ranks.commands.Ranks;
 import me.mskatking.crackedhub.modules.ranks.commands.SetRank;
+import me.mskatking.crackedhub.util.ConfigHelper;
 import me.mskatking.crackedhub.util.Console;
 import me.mskatking.crackedhub.util.Errors;
 import me.mskatking.crackedhub.util.Module;
@@ -13,6 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.checkerframework.checker.units.qual.C;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,35 +24,17 @@ import java.util.HashMap;
 public class CrackedHubRanks implements Module {
 
     private boolean enabled;
-    public ArrayList<Rank> ranks = new ArrayList<>();
 
-    public final HashMap<String, Rank> players = new HashMap<>();
+    public final HashMap<Player, String> players = new HashMap<>();
 
-    public final FileConfiguration config = new YamlConfiguration();
+    public FileConfiguration config;
     private final File f;
     private final Plugin p = CrackedHub.getPlugin(CrackedHub.class);
 
     public CrackedHubRanks() {
         File folder = new File(String.valueOf(CrackedHub.getPlugin(CrackedHub.class).getDataFolder()));
-        if(!folder.exists()) folder.mkdirs();
-        f = new File(folder, "ranks.yml");
-        try {
-            if(!f.exists()) f.createNewFile();
-            config.load(f);
-        } catch (InvalidConfigurationException e) {
-            Console.error("rank.yml is invalid!");
-        } catch (Exception e) {
-            Console.error("Unable to load ranks!");
-        }
-
-        for(String s : config.getKeys(false)) {
-            ranks.add(config.getSerializable(s, Rank.class));
-        }
-    }
-
-    public NamedTextColor getPlayerColor(Player p) {
-        if (!enabled) return NamedTextColor.GRAY;
-        return players.get(p.getUniqueId().toString()).color;
+        f = ConfigHelper.getFile("ranks.yml");
+        config = ConfigHelper.getConfig("ranks.yml");
     }
 
     public void disable() {
@@ -91,14 +75,14 @@ public class CrackedHubRanks implements Module {
 
     @Override
     public Component getPrefix() {
-        return null;
+        return Component.text("[", NamedTextColor.GOLD).append(Component.text("Ranks", NamedTextColor.YELLOW)).append(Component.text("] ", NamedTextColor.GOLD));
     }
 
     public void enable() {
         Console.info("Enabling rank module...");
         enabled = true;
-        p.getServer().getCommandMap().register("ranks", new Ranks());
-        p.getServer().getCommandMap().register("setrank", new SetRank());
+        p.getServer().getCommandMap().register("crackedhub", new Ranks());
+        p.getServer().getCommandMap().register("crackedhub", new SetRank());
         Console.info("Rank module enabled!");
     }
 }

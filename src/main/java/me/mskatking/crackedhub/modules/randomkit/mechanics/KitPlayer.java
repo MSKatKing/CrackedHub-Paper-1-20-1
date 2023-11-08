@@ -10,10 +10,6 @@ import java.util.Random;
 public class KitPlayer {
 
     public static void giveKit(Player p, Kit k) {
-        if(p.getInventory().getContents().length >= p.getInventory().getSize() + k.items.size()) {
-            p.sendMessage(Component.text("[Kits] Your inventory is full! You need space for " + k.items.size() + " items!", NamedTextColor.RED));
-            return;
-        }
         for(ItemStack i : k.items) {
             p.getInventory().addItem(i);
         }
@@ -21,10 +17,6 @@ public class KitPlayer {
 
     public static void giveRandomKit(Player p) {
         Kit random = (CrackedHub.randomKitModule.kits.size() - 1) == 0 ? CrackedHub.randomKitModule.kits.get(0) : CrackedHub.randomKitModule.kits.get(new Random().nextInt(0, CrackedHub.randomKitModule.kits.size() - 1));
-        if(p.getInventory().getContents().length >= p.getInventory().getSize() + random.items.size()) {
-            p.sendMessage(Component.text("[Kits] Your inventory is full! You need space for " + random.items.size() + " items!", NamedTextColor.RED));
-            return;
-        }
         for(ItemStack i : random.items) {
             p.getInventory().addItem(i);
         }

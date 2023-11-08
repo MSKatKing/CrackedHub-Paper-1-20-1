@@ -2,6 +2,7 @@ package me.mskatking.crackedhub.modules.randomkit.mechanics;
 
 import me.mskatking.crackedhub.util.GUIObject;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -20,6 +21,11 @@ public class Kit implements ConfigurationSerializable, GUIObject {
     public Kit(ItemStack... items) {
         this.id = UUID.randomUUID().toString();
         this.items.addAll(List.of(items));
+    }
+
+    public Kit(Component name, ArrayList<ItemStack> items) {
+        this.id = ((TextComponent) name).content();
+        this.items.addAll(items);
     }
 
     public Kit(String id, List<Map<?, ?>> in) {
@@ -41,16 +47,16 @@ public class Kit implements ConfigurationSerializable, GUIObject {
     }
 
     public String getID() {
-        return this.id.toString();
+        return this.id;
     }
 
     @Override
     public ItemStack getRepresentingItem() {
         ItemStack out = new ItemStack(Material.NAME_TAG);
         ItemMeta meta = out.getItemMeta();
-        meta.displayName(Component.text(id.toString(), NamedTextColor.AQUA).decorate(TextDecoration.BOLD));
+        meta.displayName(Component.text(id, NamedTextColor.AQUA).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
         List<Component> lore = new ArrayList<>();
-        items.forEach((i) -> lore.add(i.displayName().color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)));
+        items.forEach((i) -> lore.add(i.displayName().append(Component.text("x" + i.getAmount(), NamedTextColor.DARK_GRAY)).decoration(TextDecoration.ITALIC, false)));
         meta.lore(lore);
         out.setItemMeta(meta);
         return out;

@@ -55,7 +55,7 @@ public class CrackedHubRandomKit implements Module {
     @Override
     public void enable() {
         Console.info("Enabling random kit module...");
-        CrackedHub.getPlugin().getServer().getCommandMap().register("randomkit", new RandomKit());
+        CrackedHub.getPlugin().getServer().getCommandMap().register("crackedhub", new RandomKit());
         CrackedHub.getPlugin().getServer().getPluginManager().registerEvents(new MainListener(), CrackedHub.getPlugin());
         enabled = true;
         initializeFromConfig();
@@ -109,7 +109,7 @@ public class CrackedHubRandomKit implements Module {
     @Override
     public boolean initializeFromConfig() {
         for(String s : config.getKeys(false)) {
-            kits.add(new Kit(s, config.getMapList(s + ".items")));
+            if(!s.equals("players")) kits.add(new Kit(s, config.getMapList(s + ".items")));
         }
         return true;
     }

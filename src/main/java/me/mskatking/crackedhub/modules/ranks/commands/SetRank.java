@@ -2,6 +2,7 @@ package me.mskatking.crackedhub.modules.ranks.commands;
 
 import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.util.Console;
+import me.mskatking.crackedhub.util.SQLProcessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -10,6 +11,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,16 +38,9 @@ public class SetRank extends Command {
         OfflinePlayer p = Bukkit.getOfflinePlayer(strings[0]);
 
         if(ranks.contains(strings[1])) {
-            if(!CrackedHub.developers.contains(p.getUniqueId().toString())) CrackedHub.developers.add(p.getUniqueId().toString());
-            CrackedHub.ranksModule.config.set(strings[1], CrackedHub.developers);
-            try {
-                CrackedHub.ranksModule.save();
-            } catch (Exception e) {
-                Console.error("Unable to save ranks!");
-                commandSender.sendMessage(Component.text("Unable to give " + p.getName() + " the rank " + strings[1], NamedTextColor.RED));
-                return true;
-            }
+            SQLProcessor.execute("UPDATE PLAYER_DATA SET RANK = '" + strings[1] + "' WHERE UUID = '" + p.getUniqueId() + "';");
             commandSender.sendMessage(Component.text("Successfully gave " + p.getName() + " the rank " + strings[1], NamedTextColor.GREEN));
+            SQLProcessor.printTable("PLAYER_DATA");
             return true;
         } else {
             commandSender.sendMessage(Component.text("The rank " + strings[1] + " does not exist!", NamedTextColor.RED));
