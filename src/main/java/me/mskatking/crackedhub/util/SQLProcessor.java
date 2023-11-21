@@ -125,7 +125,7 @@ public class SQLProcessor {
         PLAYER_DATA("PLAYER_DATA"),
         DUPE_LIFESTEAL_DATA("DUPE_LIFESTEAL_DATA");
 
-        private String value;
+        private final String value;
         Tables(String value) {this.value = value;}
         public String toString() {return value;}
     }

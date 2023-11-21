@@ -1,6 +1,5 @@
 package me.mskatking.crackedhub.modules.randomkit.events;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
 import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.modules.randomkit.gui.KitGUI;
 import me.mskatking.crackedhub.modules.randomkit.mechanics.Kit;
@@ -171,10 +170,6 @@ public class MainListener implements Listener {
             e.getPlayer().sendMessage(Component.text("Welcome to Random Kits!", NamedTextColor.GOLD).decorate(TextDecoration.BOLD));
             e.getPlayer().sendMessage(Component.text("Every time you respawn, you will be given a new kit!", NamedTextColor.GRAY));
             e.getPlayer().sendMessage("");
-        }
-        if(CrackedHub.core.getMVWorldManager().getMVWorld("random_kit").getCBWorld().equals(e.getFrom()) ||
-                CrackedHub.core.getMVWorldManager().getMVWorld("random_kit_end").getCBWorld().equals(e.getFrom()) ||
-                CrackedHub.core.getMVWorldManager().getMVWorld("random_kit_nether").getCBWorld().equals(e.getFrom())) {
         }
         if(CrackedHub.core.getMVWorldManager().getMVWorld("random_kit").getCBWorld().equals(e.getPlayer().getWorld()) ||
                 CrackedHub.core.getMVWorldManager().getMVWorld("random_kit_end").getCBWorld().equals(e.getPlayer().getWorld()) ||

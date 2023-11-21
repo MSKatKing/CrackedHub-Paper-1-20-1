@@ -2,14 +2,12 @@ package me.mskatking.crackedhub.util;
 
 import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.modules.ranks.util.Rank;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 import java.sql.ResultSet;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 public class CrackedHubPlayer {
 
@@ -49,14 +47,8 @@ public class CrackedHubPlayer {
             staff = rs.getBoolean("STAFF");
             hearts = rs1.getInt("HEALTH");
             switch (rs.getString("RANK")) {
-                case "member" -> {
-                    rank = Rank.Ranks.MEMBER.value();
-                    break;
-                }
-                case "developer" -> {
-                    rank = Rank.Ranks.DEVELOPER.value();
-                    break;
-                }
+                case "member" -> rank = Rank.Ranks.MEMBER.value();
+                case "developer" -> rank = Rank.Ranks.DEVELOPER.value();
             }
         } catch (Exception ignored1) {}
 

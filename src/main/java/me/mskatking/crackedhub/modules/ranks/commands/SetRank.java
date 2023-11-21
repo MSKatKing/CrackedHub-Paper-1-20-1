@@ -1,7 +1,5 @@
 package me.mskatking.crackedhub.modules.ranks.commands;
 
-import me.mskatking.crackedhub.CrackedHub;
-import me.mskatking.crackedhub.util.Console;
 import me.mskatking.crackedhub.util.SQLProcessor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,8 +9,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

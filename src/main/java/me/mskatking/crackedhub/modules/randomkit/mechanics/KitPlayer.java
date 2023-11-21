@@ -1,10 +1,9 @@
 package me.mskatking.crackedhub.modules.randomkit.mechanics;
 
 import me.mskatking.crackedhub.CrackedHub;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import java.util.Random;
 
 public class KitPlayer {

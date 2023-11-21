@@ -1,6 +1,5 @@
 package me.mskatking.crackedhub.modules.dupelifesteal.commands;
 
-import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.util.WorldHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

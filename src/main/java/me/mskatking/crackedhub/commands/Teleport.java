@@ -6,13 +6,10 @@ import me.mskatking.crackedhub.util.CustomErrors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -25,6 +22,7 @@ public class Teleport extends Command {
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(!(sender instanceof Player) && args.length == 2) {
             Player p = Bukkit.getPlayer(args[0]);
+            assert p != null;
             p.sendMessage(Component.text("Connecting to " + args[1] + "...", NamedTextColor.GRAY));
             MultiverseWorld world;
             switch (args[1]) {

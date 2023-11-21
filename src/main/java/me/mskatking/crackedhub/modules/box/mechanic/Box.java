@@ -2,7 +2,6 @@ package me.mskatking.crackedhub.modules.box.mechanic;
 
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import me.mskatking.crackedhub.CrackedHub;
-import me.mskatking.crackedhub.modules.box.CrackedHubBox;
 import me.mskatking.crackedhub.util.Console;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,13 +9,12 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class Box {
 
     private final MultiverseWorld world;
     private final Location loc1, loc2;
-    private HashMap<Material, Double> blocks;
+    private final HashMap<Material, Double> blocks;
     private int resetTime;
     private double resetPercent;
     private int timeSinceReset;
