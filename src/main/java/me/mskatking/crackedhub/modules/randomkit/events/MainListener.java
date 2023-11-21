@@ -39,7 +39,7 @@ public class MainListener implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
-        if (CrackedHub.randomKitModule.players.contains(e.getPlayer())) {
+        if (e.getPlayer().getWorld().equals(CrackedHub.core.getMVWorldManager().getMVWorld("random_kit").getCBWorld())) {
             e.getPlayer().sendMessage(CrackedHub.randomKitModule.getPrefix().append(Component.text("Giving you a random kit!", NamedTextColor.GREEN)));
             KitPlayer.giveRandomKit(e.getPlayer());
         }
@@ -175,14 +175,12 @@ public class MainListener implements Listener {
         if(CrackedHub.core.getMVWorldManager().getMVWorld("random_kit").getCBWorld().equals(e.getFrom()) ||
                 CrackedHub.core.getMVWorldManager().getMVWorld("random_kit_end").getCBWorld().equals(e.getFrom()) ||
                 CrackedHub.core.getMVWorldManager().getMVWorld("random_kit_nether").getCBWorld().equals(e.getFrom())) {
-            CrackedHub.randomKitModule.players.remove(e.getPlayer());
         }
         if(CrackedHub.core.getMVWorldManager().getMVWorld("random_kit").getCBWorld().equals(e.getPlayer().getWorld()) ||
                 CrackedHub.core.getMVWorldManager().getMVWorld("random_kit_end").getCBWorld().equals(e.getPlayer().getWorld()) ||
                 CrackedHub.core.getMVWorldManager().getMVWorld("random_kit_nether").getCBWorld().equals(e.getPlayer().getWorld())) {
             if(CrackedHub.randomKitModule.isFirstJoin(e.getPlayer()))
                 KitPlayer.giveRandomKit(e.getPlayer());
-            CrackedHub.randomKitModule.players.add(e.getPlayer());
         }
     }
 }

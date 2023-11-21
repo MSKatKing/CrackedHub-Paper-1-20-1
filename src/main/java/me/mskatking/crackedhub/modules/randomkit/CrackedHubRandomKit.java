@@ -25,7 +25,6 @@ import java.util.*;
 
 public class CrackedHubRandomKit implements Module {
 
-    public ArrayList<Player> players = new ArrayList<>();
     public ArrayList<Kit> kits = new ArrayList<>();
 
     private final FileConfiguration config;

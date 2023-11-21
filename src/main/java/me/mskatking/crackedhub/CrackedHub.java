@@ -3,12 +3,16 @@ package me.mskatking.crackedhub;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import me.mskatking.crackedhub.commands.Lobby;
 import me.mskatking.crackedhub.commands.RebootMessage;
+import me.mskatking.crackedhub.commands.Teleport;
 import me.mskatking.crackedhub.modules.box.CrackedHubBox;
+import me.mskatking.crackedhub.modules.dupelifesteal.DupeLifesteal;
 import me.mskatking.crackedhub.modules.randomkit.CrackedHubRandomKit;
 import me.mskatking.crackedhub.modules.ranks.CrackedHubRanks;
 import me.mskatking.crackedhub.util.ConfigHelper;
 import me.mskatking.crackedhub.util.Console;
+import me.mskatking.crackedhub.util.CrackedHubPlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,7 +23,7 @@ import java.util.ArrayList;
 
 public final class CrackedHub extends JavaPlugin {
 
-    public static ArrayList<String> developers = new ArrayList<>();
+    public static ArrayList<CrackedHubPlayer> onlinePlayers = new ArrayList<>();
 
     public static final MultiverseCore core = MultiverseCore.getPlugin(MultiverseCore.class);
     private static CrackedHub instance;
@@ -27,6 +31,7 @@ public final class CrackedHub extends JavaPlugin {
     public static CrackedHubBox boxModule;
     public static CrackedHubRanks ranksModule;
     public static CrackedHubRandomKit randomKitModule;
+    public static DupeLifesteal dupeLifesteal;
 
     public static FileConfiguration config = new YamlConfiguration();
     public static File f;
@@ -39,6 +44,7 @@ public final class CrackedHub extends JavaPlugin {
         boxModule = new CrackedHubBox();
         ranksModule = new CrackedHubRanks();
         randomKitModule = new CrackedHubRandomKit();
+        dupeLifesteal = new DupeLifesteal();
 
         f = ConfigHelper.getFile("config.yml");
         config = ConfigHelper.getConfig("config.yml");
@@ -47,15 +53,22 @@ public final class CrackedHub extends JavaPlugin {
         if (!config.contains("modules.ranks")) config.set("modules.ranks", true);
         if (!config.contains("modules.admin")) config.set("modules.admin", true);
         if (!config.contains("modules.randomkit")) config.set("modules.randomkit", true);
+        if (!config.contains("modules.dupelifesteal")) config.set("modules.dupelifesteal", true);
 
         if(config.getBoolean("modules.box")) boxModule.enable();
         if(config.getBoolean("modules.ranks")) ranksModule.enable();
         if(config.getBoolean("modules.randomkit")) randomKitModule.enable();
+        if(config.getBoolean("modules.dupelifesteal")) dupeLifesteal.enable();
 
         getServer().getCommandMap().register("crackedhub", new me.mskatking.crackedhub.commands.CrackedHub());
         getServer().getCommandMap().register("crackedhub", new RebootMessage());
+        getServer().getCommandMap().register("crackedhub", new Teleport());
+        getServer().getCommandMap().register("crackedhub", new Lobby());
+
+        getServer().getPluginManager().registerEvents(new MainEvents(), this);
 
         Console.info("CrackedHub enabled!");
+        System.gc();
     }
 
     @Override

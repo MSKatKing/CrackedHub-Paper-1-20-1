@@ -3,6 +3,7 @@ package me.mskatking.crackedhub.modules.ranks;
 import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.modules.ranks.commands.Ranks;
 import me.mskatking.crackedhub.modules.ranks.commands.SetRank;
+import me.mskatking.crackedhub.modules.ranks.events.RankEvents;
 import me.mskatking.crackedhub.util.ConfigHelper;
 import me.mskatking.crackedhub.util.Console;
 import me.mskatking.crackedhub.util.Errors;
@@ -20,19 +21,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class CrackedHubRanks implements Module {
 
     private boolean enabled;
-
-    public final HashMap<Player, String> players = new HashMap<>();
 
     public FileConfiguration config;
     private final File f;
     private final Plugin p = CrackedHub.getPlugin(CrackedHub.class);
 
     public CrackedHubRanks() {
-        File folder = new File(String.valueOf(CrackedHub.getPlugin(CrackedHub.class).getDataFolder()));
         f = ConfigHelper.getFile("ranks.yml");
         config = ConfigHelper.getConfig("ranks.yml");
     }
@@ -83,6 +82,7 @@ public class CrackedHubRanks implements Module {
         enabled = true;
         p.getServer().getCommandMap().register("crackedhub", new Ranks());
         p.getServer().getCommandMap().register("crackedhub", new SetRank());
+        p.getServer().getPluginManager().registerEvents(new RankEvents(), p);
         Console.info("Rank module enabled!");
     }
 }
