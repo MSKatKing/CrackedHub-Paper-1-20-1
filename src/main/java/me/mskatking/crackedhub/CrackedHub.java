@@ -14,6 +14,12 @@ import me.mskatking.crackedhub.util.Console;
 import me.mskatking.crackedhub.util.CrackedHubPlayer;
 import me.mskatking.crackedhub.util.events.PluginShutdownEvent;
 import me.mskatking.crackedhub.util.events.PluginStartupEvent;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.hooks.AnnotatedEventManager;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -37,19 +43,27 @@ public final class CrackedHub extends JavaPlugin {
     public static FileConfiguration config = new YamlConfiguration();
     public static File f;
 
+    public static JDA bot;
+
     @Override
     public void onEnable() {
+        Console.info("Initilizing Core features.");
         instance = this;
-
-        Bukkit.getPluginManager().callEvent(new PluginStartupEvent(instance, core, config));
 
         boxModule = new Boxes();
         ranksModule = new Ranks();
         randomKitModule = new RandomKit();
         dupeLifesteal = new DupeLifesteal();
 
+        getServer().getPluginManager().registerEvents(boxModule, this);
+        getServer().getPluginManager().registerEvents(ranksModule, this);
+        getServer().getPluginManager().registerEvents(randomKitModule, this);
+        getServer().getPluginManager().registerEvents(dupeLifesteal, this);
+
         f = ConfigHelper.getFile("config.yml");
         config = ConfigHelper.getConfig("config.yml");
+
+        bot = JDABuilder.createLight(config.getString("discord.token"), GatewayIntent.MESSAGE_CONTENT).setEventManager(new AnnotatedEventManager()).addEventListeners(new DiscordListener()).setActivity(Activity.playing("CrackedHub Server")).setStatus(OnlineStatus.ONLINE).build();
 
         if (!config.contains("modules.box")) config.set("modules.box", true);
         if (!config.contains("modules.ranks")) config.set("modules.ranks", true);
@@ -64,6 +78,8 @@ public final class CrackedHub extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MainEvents(), this);
         getServer().getPluginManager().registerEvents(new MainModule(), this);
 
+        Bukkit.getPluginManager().callEvent(new PluginStartupEvent(instance, core, config));
+
         Console.info("CrackedHub enabled!");
         System.gc();
     }
@@ -72,6 +88,8 @@ public final class CrackedHub extends JavaPlugin {
     public void onDisable() {
         Console.info("Shutting down modules...");
         Bukkit.getPluginManager().callEvent(new PluginShutdownEvent(instance, core));
+
+        bot.shutdown();
 
         try {
             config.save(f);

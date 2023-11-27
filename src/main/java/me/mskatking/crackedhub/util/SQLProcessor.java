@@ -45,6 +45,7 @@ public class SQLProcessor {
             sql.execute(query);
         } catch (Exception e) {
             Console.error("Unable to connect to the sql database!");
+            e.printStackTrace();
         }
         dataSource.close();
     }
@@ -97,6 +98,33 @@ public class SQLProcessor {
         return false;
     }
 
+    public static boolean contains(String uuid, String table) {
+        HikariConfig hConfig = new HikariConfig();
+        hConfig.setJdbcUrl((String) CrackedHub.config.get("sql.address"));
+        hConfig.setUsername((String) CrackedHub.config.get("sql.username"));
+        hConfig.setPassword((String) CrackedHub.config.get("sql.password"));
+
+        HikariDataSource dataSource = new HikariDataSource(hConfig);
+        try(Connection conn = dataSource.getConnection()) {
+            PreparedStatement sql = conn.prepareStatement("SQL");
+
+            sql.execute("USE s318_SERVER_DATA");
+
+            ResultSet rs = sql.executeQuery("SELECT UUID FROM " + table + ";");
+            while(rs.next()) {
+                if(rs.getString("UUID").equals(uuid)) {
+                    dataSource.close();
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Console.error("Unable to connect to the sql database!");
+            e.printStackTrace();
+        }
+        dataSource.close();
+        return false;
+    }
+
     public static boolean isStaff(String uuid) {
         HikariConfig hConfig = new HikariConfig();
         hConfig.setJdbcUrl((String) CrackedHub.config.get("sql.address"));
@@ -128,5 +156,9 @@ public class SQLProcessor {
         private final String value;
         Tables(String value) {this.value = value;}
         public String toString() {return value;}
+    }
+
+    public static void saveBackup() {
+
     }
 }

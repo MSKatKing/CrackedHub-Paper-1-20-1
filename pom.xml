@@ -47,6 +47,8 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <directory>${dir}</directory>
+        <finalName>${name}</finalName>
     </build>
 
     <repositories>
@@ -82,6 +84,11 @@
             <artifactId>HikariCP</artifactId>
             <version>4.0.3</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>5.0.0-beta.18</version>
         </dependency>
     </dependencies>
 </project>

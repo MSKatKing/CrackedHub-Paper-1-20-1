@@ -8,8 +8,9 @@ public class Rank {
 
     public Component prefix;
     public NamedTextColor chatColor;
+    public int priority;
 
-    public Rank(Component prefix, NamedTextColor chatColor) {
+    public Rank(Component prefix, NamedTextColor chatColor, int priority) {
         this.prefix = prefix;
         this.chatColor = chatColor;
     }
@@ -19,8 +20,9 @@ public class Rank {
     }
 
     public enum Ranks {
-        MEMBER(new Rank(Component.text("Member", NamedTextColor.GRAY).decorate(TextDecoration.BOLD), NamedTextColor.GRAY)),
-        DEVELOPER(new Rank(Component.text("Developer", NamedTextColor.RED).decorate(TextDecoration.BOLD), NamedTextColor.WHITE));
+        MEMBER(new Rank(Component.text("Member", NamedTextColor.GRAY).decorate(TextDecoration.BOLD), NamedTextColor.GRAY, 0)),
+        DEVELOPER(new Rank(Component.text("Developer", NamedTextColor.RED).decorate(TextDecoration.BOLD), NamedTextColor.WHITE, 999)),
+        OWNER(new Rank(Component.text("Owner ", NamedTextColor.DARK_RED).decorate(TextDecoration.BOLD), NamedTextColor.WHITE, 100000));
 
         private final Rank value;
         Ranks(Rank rank) {value = rank;}

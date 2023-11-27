@@ -1,6 +1,6 @@
 package me.mskatking.crackedhub.modules.dupelifesteal.commands;
 
-import me.mskatking.crackedhub.util.WorldHelper;
+import me.mskatking.crackedhub.modules.dupelifesteal.Items;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -20,11 +20,7 @@ public class Dupe extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(sender instanceof Player p) {
-            if(WorldHelper.isInWorlds(p, "dupelifesteal", "dupelifesteal_nether", "dupelifesteal_end")) {
-                p.getInventory().addItem(p.getInventory().getItemInMainHand());
-            } else {
-                p.sendMessage(Component.text("You must be playing on dupe lifesteal to use this command!", NamedTextColor.RED));
-            }
+             p.getInventory().addItem(Items.DUPER_TROOPER.getValue());
         } else {
             sender.sendMessage(Component.text("You must be a player to run this command!", NamedTextColor.RED));
         }

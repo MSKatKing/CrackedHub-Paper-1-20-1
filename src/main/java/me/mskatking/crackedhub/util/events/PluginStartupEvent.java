@@ -15,6 +15,7 @@ public class PluginStartupEvent extends Event {
     private final CrackedHub c;
     private final MultiverseCore core;
     private final FileConfiguration config;
+    private static final HandlerList HANDLER_LIST = new HandlerList();
 
     public PluginStartupEvent(CrackedHub c, MultiverseCore core, FileConfiguration config) {
         this.c = c;
@@ -48,6 +49,10 @@ public class PluginStartupEvent extends Event {
 
     @Override
     public @NotNull HandlerList getHandlers() {
-        return null;
+        return HANDLER_LIST;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
     }
 }
