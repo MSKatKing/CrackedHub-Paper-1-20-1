@@ -1,6 +1,6 @@
 package me.mskatking.crackedhub.modules.dupelifesteal.commands;
 
-import me.mskatking.crackedhub.modules.dupelifesteal.Items;
+import me.mskatking.crackedhub.util.CraftingHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -12,15 +12,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Dupe extends Command {
-    public Dupe() {
-        super("dupe", "Dupes the current item you are holding! Only works on dupe lifesteal!", "/dupe", List.of());
+public class DuperCraft extends Command {
+    public DuperCraft() {
+        super("dupercraft", "Dupes the current item you are holding! Only works on dupe lifesteal!", "/dupercraft", List.of());
     }
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if(sender instanceof Player p) {
-             p.getInventory().addItem(Items.DUPER_TROOPER.getValue());
+            p.sendMessage(Component.text("[Dupe Lifesteal] Opening duper crafting menu...", NamedTextColor.GREEN));
+            p.openInventory(CraftingHelper.getDuperInventory());
         } else {
             sender.sendMessage(Component.text("You must be a player to run this command!", NamedTextColor.RED));
         }

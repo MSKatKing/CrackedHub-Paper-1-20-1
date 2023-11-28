@@ -13,7 +13,7 @@ import java.util.TimerTask;
 
 public class CrackedHubPlayer implements Listener {
 
-    //Dupe Lifesteal associated stuff
+    //DuperCraft Lifesteal associated stuff
     public int dupeCooldown = 0;
     public int hearts;
 
