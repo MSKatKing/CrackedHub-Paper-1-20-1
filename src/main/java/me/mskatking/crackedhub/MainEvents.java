@@ -4,8 +4,8 @@ import me.mskatking.crackedhub.util.CrackedHubPlayer;
 import me.mskatking.crackedhub.util.Messages;
 import me.mskatking.crackedhub.util.SQLProcessor;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
@@ -16,7 +16,7 @@ public class MainEvents implements Listener {
 
     @EventHandler
     public void onChat(PlayerChatEvent e) {
-        e.setFormat(((TextComponent) CrackedHubPlayer.findPlayer(e.getPlayer()).rank.getMessage(e.getPlayer().getName(), Component.text(e.getMessage()))).content());
+        e.setFormat(PlainTextComponentSerializer.plainText().serialize(e.getPlayer().displayName().append(Component.text(": ")).append(Component.text(e.getMessage()))));
     }
 
     @EventHandler

@@ -1,13 +1,9 @@
 package me.mskatking.crackedhub;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import me.mskatking.crackedhub.commands.Lobby;
-import me.mskatking.crackedhub.commands.RebootMessage;
-import me.mskatking.crackedhub.commands.Teleport;
-import me.mskatking.crackedhub.modules.box.Boxes;
+import me.mskatking.crackedhub.commands.*;
 import me.mskatking.crackedhub.modules.dupelifesteal.DupeLifesteal;
 import me.mskatking.crackedhub.modules.main.MainModule;
-import me.mskatking.crackedhub.modules.randomkit.RandomKit;
 import me.mskatking.crackedhub.modules.ranks.Ranks;
 import me.mskatking.crackedhub.util.ConfigHelper;
 import me.mskatking.crackedhub.util.Console;
@@ -27,6 +23,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 public final class CrackedHub extends JavaPlugin {
 
@@ -35,9 +33,7 @@ public final class CrackedHub extends JavaPlugin {
     public static final MultiverseCore core = MultiverseCore.getPlugin(MultiverseCore.class);
     private static CrackedHub instance;
 
-    public static Boxes boxModule;
     public static Ranks ranksModule;
-    public static RandomKit randomKitModule;
     public static DupeLifesteal dupeLifesteal;
 
     public static FileConfiguration config = new YamlConfiguration();
@@ -45,42 +41,56 @@ public final class CrackedHub extends JavaPlugin {
 
     public static JDA bot;
 
+    public static boolean alpha;
+
     @Override
     public void onEnable() {
         Console.info("Initilizing Core features.");
         instance = this;
 
-        boxModule = new Boxes();
         ranksModule = new Ranks();
-        randomKitModule = new RandomKit();
         dupeLifesteal = new DupeLifesteal();
 
-        getServer().getPluginManager().registerEvents(boxModule, this);
-        getServer().getPluginManager().registerEvents(ranksModule, this);
-        getServer().getPluginManager().registerEvents(randomKitModule, this);
-        getServer().getPluginManager().registerEvents(dupeLifesteal, this);
+        f = ConfigHelper.getFile("configs/main", "config.yml");
+        config = ConfigHelper.getConfig("configs/main", "config.yml");
 
-        f = ConfigHelper.getFile("config.yml");
-        config = ConfigHelper.getConfig("config.yml");
+        ConfigHelper.applyConfigDefaults(config, f, ConfigHelper.Configs.MAIN);
 
-        bot = JDABuilder.createLight(config.getString("discord.token"), GatewayIntent.MESSAGE_CONTENT).setEventManager(new AnnotatedEventManager()).addEventListeners(new DiscordListener()).setActivity(Activity.playing("CrackedHub Server")).setStatus(OnlineStatus.ONLINE).build();
+        alpha = config.getBoolean("server-type.alpha");
 
-        if (!config.contains("modules.box")) config.set("modules.box", true);
-        if (!config.contains("modules.ranks")) config.set("modules.ranks", true);
-        if (!config.contains("modules.admin")) config.set("modules.admin", true);
-        if (!config.contains("modules.randomkit")) config.set("modules.randomkit", true);
-        if (!config.contains("modules.dupelifesteal")) config.set("modules.dupelifesteal", true);
+        if(alpha) {
+            Console.warn("!! WARNING !!");
+            Console.warn("You are starting in alpha mode! Please only do this if you know what you are doing!");
+            Console.warn("If this server should not be in alpha mode, please shut down the server and change the config!!");
+        }
+
+        if(ConfigHelper.getConfig("configs/discord", "config.yml").getString("token").equals("-")) {
+            Console.warn("Discord config not set up properly! Shutting down discord functionality.");
+        } else {
+            bot = JDABuilder.createLight(ConfigHelper.getConfig("configs/discord", "config.yml").getString("token"), GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES).setEventManager(new AnnotatedEventManager()).addEventListeners(new DiscordListener()).setActivity(Activity.playing("CrackedHub Server")).setStatus(OnlineStatus.ONLINE).build();
+            getServer().getCommandMap().register("crackedhub", new Link());
+            getServer().getCommandMap().register("crackedhub", new Unlink());
+        }
 
         getServer().getCommandMap().register("crackedhub", new RebootMessage());
         getServer().getCommandMap().register("crackedhub", new Teleport());
         getServer().getCommandMap().register("crackedhub", new Lobby());
+        getServer().getCommandMap().register("crackedhub", new BackupSQL());
 
         getServer().getPluginManager().registerEvents(new MainEvents(), this);
         getServer().getPluginManager().registerEvents(new MainModule(), this);
+        getServer().getPluginManager().registerEvents(new DiscordListener(), this);
 
         Bukkit.getPluginManager().callEvent(new PluginStartupEvent(instance, core, config));
 
         Console.info("CrackedHub enabled!");
+
+        if(bot != null) {
+            ((DiscordListener) bot.getEventManager().getRegisteredListeners().get(0)).init();
+        }
+
+        ConfigHelper.saveConfig(config, f);
+
         System.gc();
     }
 
@@ -89,13 +99,7 @@ public final class CrackedHub extends JavaPlugin {
         Console.info("Shutting down modules...");
         Bukkit.getPluginManager().callEvent(new PluginShutdownEvent(instance, core));
 
-        bot.shutdown();
-
-        try {
-            config.save(f);
-        } catch (Exception e) {
-            Console.error("Error saving configs! Data has been lost!");
-        }
+        if(bot != null) bot.shutdown();
 
         Console.info("CrackedHub disabled!");
         System.gc();
@@ -103,5 +107,22 @@ public final class CrackedHub extends JavaPlugin {
 
     public static CrackedHub getPlugin() {
         return instance;
+    }
+
+    public static String randomString(int length) {
+        int leftLimit = 48;
+        int rightLimit = 122;
+        Random random = new Random();
+        StringBuilder buffer = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomLimitedInt = leftLimit + (int)(random.nextFloat() * (rightLimit - leftLimit + 1));
+            while(Arrays.asList(58, 59, 60, 61, 62, 63, 64, 91, 92, 93, 94, 95, 96).contains(randomLimitedInt)) {
+                randomLimitedInt = leftLimit + (int)(random.nextFloat() * (rightLimit - leftLimit + 1));
+            }
+            buffer.append((char) randomLimitedInt);
+        }
+        String generatedString = buffer.toString();
+
+        return generatedString;
     }
 }

@@ -8,13 +8,11 @@ import me.mskatking.crackedhub.util.Console;
 import me.mskatking.crackedhub.util.events.PluginReloadEvent;
 import me.mskatking.crackedhub.util.events.PluginShutdownEvent;
 import me.mskatking.crackedhub.util.events.PluginStartupEvent;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
@@ -26,16 +24,33 @@ public class DupeLifesteal implements Listener {
 
     public static FileConfiguration config;
     public static File f;
+    public static FileConfiguration configb;
+    public static File fb;
+
+    public static FileConfiguration configcrafting;
+    public static File fcrafting;
     public static ArrayList<NamespacedKey> bannedKeys = new ArrayList<>();
+
+    public DupeLifesteal() {
+        CrackedHub.getPlugin().getServer().getPluginManager().registerEvents(this, CrackedHub.getPlugin());
+    }
 
     @EventHandler
     public void startup(PluginStartupEvent e) {
         Console.info("Initializing Lifesteal...");
         e.registerCommand(new DuperCraft());
         e.registerEvent(new DupeLifestealListener());
-        config = ConfigHelper.getConfig("banneddupes.yml");
-        f = ConfigHelper.getFile("banneddupes.yml");
-        List<String> ban = config.getStringList("banned");
+        configb = ConfigHelper.getConfig("configs/dupelifesteal", "banneddupes.yml");
+        fb = ConfigHelper.getFile("configs/dupelifesteal", "banneddupes.yml");
+        config = ConfigHelper.getConfig("configs/dupelifesteal", "config.yml");
+        f = ConfigHelper.getFile("configs/dupelifesteal", "config.yml");
+        configcrafting = ConfigHelper.getConfig("configs/dupelifesteal", "recipes.yml");
+        fcrafting = ConfigHelper.getFile("configs/dupelifesteal", "recipes.yml");
+
+        //Make sure defaults are set
+        if(!configb.isSet("banned")) configb.set("banned", List.of("crackedhub:null"));
+
+        List<String> ban = configb.getStringList("banned");
         ban.forEach(i -> {
             try {
                 bannedKeys.add(new NamespacedKey(i.split(":")[0], i.split(":")[1]));
@@ -43,16 +58,12 @@ public class DupeLifesteal implements Listener {
                 Console.warn("(" + ex.getClass().getName() + ") Invalid config 'banneddupes.yml'! Error processing line: '" + i + "'.");
             }
         });
-        ShapedRecipe duperTrooperT1 = new ShapedRecipe(Items.DUPER_TROOPER.getValue());
-        duperTrooperT1.shape("***", "*%*", "***");
-        duperTrooperT1.setIngredient('%', new ItemStack(Material.DIRT, 1));
-        duperTrooperT1.setIngredient('*', new ItemStack(Material.AIR));
-        CrackedHub.getPlugin().getServer().addRecipe(duperTrooperT1);
     }
 
     @EventHandler
     public void reload(PluginReloadEvent e) {
-        config = ConfigHelper.getConfig("banneddupes.yml");
+        configb = ConfigHelper.getConfig("configs/dupelifesteal", "banneddupes.yml");
+        config = ConfigHelper.getConfig("configs/dupelifesteal", "config.yml");
         bannedKeys = new ArrayList<>();
         List<String> ban = config.getStringList("banned");
         ban.forEach(i -> {

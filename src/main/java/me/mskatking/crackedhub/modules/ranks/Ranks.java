@@ -1,5 +1,6 @@
 package me.mskatking.crackedhub.modules.ranks;
 
+import me.mskatking.crackedhub.CrackedHub;
 import me.mskatking.crackedhub.modules.ranks.commands.SetRank;
 import me.mskatking.crackedhub.modules.ranks.events.RankEvents;
 import me.mskatking.crackedhub.util.ConfigHelper;
@@ -18,6 +19,10 @@ public class Ranks implements Listener {
 
     public FileConfiguration config;
     private File f;
+
+    public Ranks() {
+        CrackedHub.getPlugin().getServer().getPluginManager().registerEvents(this, CrackedHub.getPlugin());
+    }
 
     @EventHandler
     public void startup(PluginStartupEvent e) {

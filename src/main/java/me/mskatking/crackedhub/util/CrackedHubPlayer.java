@@ -20,7 +20,7 @@ public class CrackedHubPlayer implements Listener {
     public long playtime;
     public boolean staff;
     public Player player;
-    public Rank rank;
+    public Rank rank = Rank.Ranks.MEMBER.value();
 
     private final Timer cooldownTimer = new Timer();
 
@@ -39,7 +39,7 @@ public class CrackedHubPlayer implements Listener {
                     case "member" -> rank = Rank.Ranks.MEMBER.value();
                     case "developer" -> rank = Rank.Ranks.DEVELOPER.value();
                     case "owner" -> rank = Rank.Ranks.OWNER.value();
-                    default -> rank = Rank.Ranks.DEVELOPER.value();
+                    default -> rank = Rank.Ranks.MEMBER.value();
                 }
             } catch (Exception ignored1) {}
         } else {
@@ -47,6 +47,7 @@ public class CrackedHubPlayer implements Listener {
             playtime = 0L;
             staff = false;
             hearts = 20;
+            rank = Rank.Ranks.MEMBER.value();
         }
 
         player = p;
@@ -60,8 +61,9 @@ public class CrackedHubPlayer implements Listener {
     }
 
     public static CrackedHubPlayer findPlayer(Player p) {
+        Console.error("Could not find player " + p.getUniqueId() + " (" + String.join(", ", CrackedHub.onlinePlayers.stream().map(a -> a.player.getUniqueId().toString()).toList()) + ")");
         for(CrackedHubPlayer cp : CrackedHub.onlinePlayers) {
-            if(cp.player.equals(p)) return cp;
+            if(cp.player.getUniqueId().equals(p.getUniqueId())) return cp;
         }
         return null;
     }
